@@ -11,26 +11,30 @@ class Node(var `val`: Int) {
 
 class Solution {
     fun connect(root: Node?): Node? {
-        val ans = root
-        var root: Node? = root
-        val dummyHead = Node(0)
-        var pre: Node = dummyHead
-        while (root != null) {
-            if (root.left != null) {
-                pre.next = root.left
-                pre = pre.next!!
-            }
-            if (root.right != null) {
-                pre.next = root.right
-                pre = pre.next!!
-            }
-            root = root.next
-            if (root == null) {
-                pre = dummyHead
-                root = dummyHead.next
-                dummyHead.next = null
-            }
+        if (root == null) {
+            return null
         }
-        return ans
+        val next = help(root)
+        connect(next)
+        return root
+    }
+
+    private fun help(root: Node?): Node? {
+        if (root == null) {
+            return null
+        }
+        return if (root.left == null && root.right == null) {
+            help(root.next)
+        } else if (root.left == null) {
+            root.right!!.next = help(root.next)
+            root.right
+        } else if (root.right == null) {
+            root.left!!.next = help(root.next)
+            root.left
+        } else {
+            root.left!!.next = root.right
+            root.right!!.next = help(root.next)
+            root.left
+        }
     }
 }
